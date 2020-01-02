@@ -32,6 +32,7 @@
 			<h2>Чат программа</h2>
 			<p class="lead">Укажите ваше имя и начинайте переписку</p>
 		</div>
+		
 		<div class="row">
 			<div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
 				<b>ROOMS</b>
@@ -93,7 +94,7 @@
 
 	//Слушатель события техническое сообщения "добавить новое сообщение"
 	socket.on('TECH-MESSEGE', function (username, data) {
-	$all_messages.append("<div class='alert alert-danger'><b>" + username + ':</b> ' + data + '<br>');
+	$all_messages.append("<div class='alert alert-danger'><b>" + username + ' :</b> ' + data + '<br>');
 	});
 	//===========================******************==================================
 
@@ -114,7 +115,7 @@
 	//Слушатель события "сообщщенние в чат"
 	socket.on('TO_CHAT_MESS', function(data) {
 		// Встраиваем полученное сообщение в блок с сообщениями
-		$all_messages.append("<div class='alert alert-success"  + "'><b>: " + data.name + "</b>: " + data.mess + "</div>");
+		$all_messages.append("<div class='alert alert-success"  + "'><b> " + data.name + "</b> : " + data.mess + "</div>");
 	});	
 	//===========================******************========================================
 	// Отслеживаем нажатие на кнопку в форме сообщений
