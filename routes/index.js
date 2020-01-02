@@ -20,7 +20,8 @@ module.exports = function (app, dirname) {
 				}
 			});
 			request.body.authorized = authorized;
-			console.log(request.body.userpass);
+			//console.log(request.body.userpass);
+			request.body.userpass="";
 		    response.json(request.body); // отправляем пришедший ответ обратно
 		
 		});

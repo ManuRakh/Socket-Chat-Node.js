@@ -177,14 +177,20 @@
 				 if(receivedUser.authorized == true)
 				 {
 					 $("#adminauthdiv").html("<div class='alert alert-success'>Админ авторизован</div>");
-				 }
+				
+				
 				 socket.emit('TO_SERVER_MESS', {
 					name: $name, 
 					mess: "User " + name + " has left the chat", 
 				});
 				 socket.emit('ADD_USER', "Admin: " + receivedUser.userName); 
 				 $name = "Admin: " +  receivedUser.userName;
+				}
+				else
+				{
+					$("#adminauthdiv").append("<div class='alert alert-danger'>Ошибка авторизации</div>");
 
+				}
              });
              request.send(user);
          });
