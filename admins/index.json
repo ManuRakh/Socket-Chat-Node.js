@@ -1,0 +1,16 @@
+{
+   "admins":[
+       {
+        "name": "Manu",
+        "pass":"qwerty"
+       },
+       {
+        "name": "Dmitriy",
+        "pass":"123456"
+       },
+       {
+        "name": "Jane",
+        "pass":"1234321"
+       }
+   ]
+}

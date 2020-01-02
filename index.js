@@ -2,9 +2,15 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-//Роутинг
+bodyParser = require('body-parser'),
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+
+  
 var routes = require("./routes")(app, __dirname); //находится в папке routes в файле index.js
 
+	// const newsJSON = require(__dirname + '/admins/index.json');
 
 // Отслеживание порта
 server.listen(3000); //к примеру для входа используется localhost:3000
@@ -18,7 +24,7 @@ try{
 }
 catch(exception)
 {
-	console.log("error");
+	console.log("error" + exception);
 }
 //===========================******************========================================
 
@@ -51,7 +57,7 @@ function addUser(socket)
 		socket.room = 'lobby';
 		usernames[username] = username;
 		socket.join('lobby'); //по умолчанию подключается к комнате Lobby
-		socket.emit('TECH-MESSEGE', 'server', 'you have connected to lobby');  //отправка сообщения об успешном подключении к чату
+		socket.emit('TECH-MESSEGE', 'server', 'you <b>' + username +'</b> have connected to lobby');  //отправка сообщения об успешном подключении к чату
 		socket.broadcast.to('lobby').emit('TECH-MESSEGE', 'server ',socket.username + ' has connected to this room');//отправка сообщения юзерам данной комнаты о новом сочатчанине
 		socket.emit('UPDATE_ROOMS', rooms, 'lobby');
 		console.log( username + " connected to the " + socket.room);//сообщение о подключении юзера в консоль

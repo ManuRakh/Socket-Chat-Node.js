@@ -23,6 +23,14 @@
 			<a class="p-2 text-dark" href="#">Про нас</a>
 			<a class="p-2 text-dark" href="#">Поддержка</a>
 			<a class="p-2 text-dark" href="#">Цены</a>
+			<div class="row" id = "adminauthdiv">
+				<h2>Вход для админов</h2>
+				<form id = "adminauth" name = "adminauth">
+					<input type="text" name="login" placeholder="Имя"> <br/>
+					<input type="text" name="password" placeholder="Пароль"> <br/>
+					<input type="submit" value="Войти">
+				</form>
+			</div>
 		</nav>
 		<a class="btn btn-outline-primary" href="#">Регистрация</a>
 	</div>
@@ -39,6 +47,7 @@
 				<div id="rooms"></div>
 			</div>
 		</div>
+	
 		<div class="row">
 			<div class="col-6">
 				<!-- Форма для получения сообщений и имени -->
@@ -71,7 +80,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
-
 	//Создание переменных//
 	var $all_messages = $("#all_mess"); // Блок с сообщениями
 	// У каждого пользователя будет случайный стиль для блока с сообщенями,
@@ -149,7 +157,37 @@
 			console.log("room switch");
 		}	
 	//=======================***************========================================
+	//Функция для авторизации Администратора
+	document.getElementById("adminauth").addEventListener("submit", function (e) {
+             e.preventDefault();
+            // получаем данные формы
+            let registerForm = document.forms["adminauth"];
+            let userName = registerForm.elements["login"].value;
+            let userpass = registerForm.elements["password"].value;
+            // сериализуем данные в json
+            let user = JSON.stringify({userName: userName, userpass: userpass});
+            let request = new XMLHttpRequest();
+            // посылаем запрос на адрес "/user"
+             request.open("POST", "/admins/auth", true);   
+             request.setRequestHeader("Content-Type", "application/json");
+             request.addEventListener("load", function () {
+                // получаем и парсим ответ сервера
+                 let receivedUser = JSON.parse(request.response);
+				 console.log(receivedUser.userName, "-", receivedUser.authorized);   // смотрим ответ сервера
+				 if(receivedUser.authorized == true)
+				 {
+					 $("#adminauthdiv").html("<div class='alert alert-success'>Админ авторизован</div>");
+				 }
+				 socket.emit('TO_SERVER_MESS', {
+					name: $name, 
+					mess: "User " + name + " has left the chat", 
+				});
+				 socket.emit('ADD_USER', "Admin: " + receivedUser.userName); 
+				 $name = "Admin: " +  receivedUser.userName;
 
+             });
+             request.send(user);
+         });
 	</script>
 </body>
 </html>
