@@ -55,13 +55,43 @@ function addUser(socket)
 	socket.on('ADD_USER', function(username) {
 		socket.username = username;
 		socket.room = 'lobby';
+		createRoomByServer(socket,username);
+		switchRoomByServer(socket, username);
 		usernames[username] = username;
-		socket.join('lobby'); //по умолчанию подключается к комнате Lobby
-		socket.emit('TECH-MESSEGE', 'server', 'you <b>' + username +'</b> have connected to lobby');  //отправка сообщения об успешном подключении к чату
-		socket.broadcast.to('lobby').emit('TECH-MESSEGE', 'server ',socket.username + ' has connected to this room');//отправка сообщения юзерам данной комнаты о новом сочатчанине
-		socket.emit('UPDATE_ROOMS', rooms, 'lobby');
-		console.log( username + " connected to the " + socket.room);//сообщение о подключении юзера в консоль
+		//socket.join('lobby'); //по умолчанию подключается к комнате Lobby
+		//socket.emit('TECH-MESSEGE', 'server', 'you <b>' + username +'</b> have connected to chat');  //отправка сообщения об успешном подключении к чату
+		socket.broadcast.to(socket.room).emit('TECH-MESSEGE', 'server ',socket.username + ' has connected to this room');//отправка сообщения юзерам данной комнаты о новом сочатчанине
+		socket.emit('UPDATE_ROOMS', rooms, socket.room);
+		console.log( username + " connected to the " + socket.room +" room");//сообщение о подключении юзера в консоль
 	});
+}
+function createRoomByServer(socket, roomName)
+{		
+		var	match = searchStringInArray(roomName, rooms); //поиск совпадений комнат
+		if(match==-1) //если нет совпадения - добавить комнату в список комнат
+			{
+				rooms.push(roomName);
+				io.sockets.emit('UPDATE_ROOMS', rooms, socket.room);  //вызов в index.html
+			}
+		else
+			{
+				console.log("Комната с таким именем уже существует");
+			}
+		
+}
+
+function switchRoomByServer(socket, newroom)
+{
+	var oldroom;
+	oldroom = socket.room;
+	socket.leave(socket.room);
+	socket.join(newroom);
+	//socket.emit('TECH-MESSEGE', 'server', 'you have left room ' + oldroom);
+	socket.emit('TECH-MESSEGE', 'server', 'you have connected to ' + newroom);
+	//socket.broadcast.to(oldroom).emit('TECH-MESSEGE', 'server ',socket.username + ' has left this room');
+	socket.room = newroom;
+	socket.broadcast.to(newroom).emit('TECH-MESSEGE', 'server ',socket.username + ' has joined this room');
+	socket.emit('UPDATE_ROOMS', rooms, newroom);
 }
 function createRoom(socket)
 {
@@ -78,7 +108,7 @@ function switchRoom(socket)
 		socket.leave(socket.room);
 		socket.join(newroom);
 		socket.emit('TECH-MESSEGE', 'server', 'you have left room ' + oldroom);
-		socket.emit('TECH-MESSEGE', 'server', 'you have connected to ' + newroom);
+		socket.emit('TECH-MESSEGE', 'server', 'you have connected to ' + newroom + " room");
 		socket.broadcast.to(oldroom).emit('TECH-MESSEGE', 'server ',socket.username + ' has left this room');
 		socket.room = newroom;
 		socket.broadcast.to(newroom).emit('TECH-MESSEGE', 'server ',socket.username + ' has joined this room');
@@ -101,4 +131,11 @@ function disconnect(socket)
 	socket.on('disconnect', function(data) {
 		console.log("Отключились");
 	});
+}
+
+function searchStringInArray (str, strArray) {
+    for (var j=0; j<strArray.length; j++) {
+        if (strArray[j].match(str)) return j;
+    }
+    return -1;
 }
