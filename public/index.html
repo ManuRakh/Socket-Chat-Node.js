@@ -47,7 +47,13 @@
 				<div id="rooms"></div>
 			</div>
 		</div>
-	
+		<div class="row">
+			<form id = "deleteRoomForm">
+				<label>Имя комнаты</label>
+				<input type = "text" id = "roomNameDelete" name = "roomNameDelete" class="form-control"><br/>
+				<input type = "submit" value = "DELETE ROOM" class="btn  btn-danger">
+			</form>
+		</div>
 		<div class="row">
 			<div class="col-6">
 				<!-- Форма для получения сообщений и имени -->
@@ -89,14 +95,17 @@
 	var $form = $("#messForm"); // Форму сообщений
 	var $name = name; // Поле с именем
 	var $textarea = $("#message"); // Текстовое поле
+	var currentRoom = '';
 	//===========================******************========================================
 
 	//подключение нового канала
 	var socket = io.connect();
+	var userInfo = {'objects':"example of tooooooons of objects"+ $name +" ou yeeeeeee"};
 	//создание нового канала
 	socket.on('connect', function(){ 
 	//вызов событий при подключении	
-	socket.emit('ADD_USER', name); 
+	socket.emit('ADD_USER', name, userInfo);  //добавить имя и информацию о юзере
+	currentRoom = name;
 	});
 	//===========================******************========================================
 
@@ -105,12 +114,17 @@
 	$all_messages.append("<div class='alert alert-danger'><b>" + username + ' :</b> ' + data + '<br>');
 	});
 	//===========================******************==================================
+	socket.on("USER-INFO", function(user_info)
+	{
+		console.log(user_info);//чисто для проверки.
+	});
+	//===========================******************==================================
 
 	//Слушатель события "обновить список комнат"
 	socket.on('UPDATE_ROOMS', function (rooms, current_room) {
 		 $('#rooms').empty();
 		 $.each(rooms, function(key, value) {
-		if(value == current_room){
+		if(value == currentRoom){
 			$('#rooms').append('<div>' + value + '</div>');
 				}
 		else {
@@ -118,12 +132,16 @@
 				}
 			 });
 		});
+		
 	//===========================******************========================================
 	
 	//Слушатель события "сообщщенние в чат"
 	socket.on('TO_CHAT_MESS', function(data) {
 		// Встраиваем полученное сообщение в блок с сообщениями
-		$all_messages.append("<div class='alert alert-success"  + "'><b> " + data.name + "</b> : " + data.mess + "</div>");
+		if(data.name == '')
+			$all_messages.append("<div class='alert alert-success"  + "'><b> " + data.name + "</b> : " + data.mess + "</div>");
+		else
+			$all_messages.append("<div class='alert alert-success"  + "'><b> " + data.name + "</b> : " + data.mess + "</div>");
 	});	
 	//===========================******************========================================
 	// Отслеживаем нажатие на кнопку в форме сообщений
@@ -134,7 +152,9 @@
 	socket.emit('TO_SERVER_MESS', {
 			mess: $textarea.val(), 
 			name: $name, 
+			current_room: currentRoom
 		});
+		console.log(currentRoom);
 	// Очищаем поле с сообщением
 		$textarea.val('');
 	});
@@ -150,10 +170,20 @@
 			socket.emit("CREATE_ROOM",$roomName.val());
 		});
 	//===========================******************========================================
-
+	var $deleteRoomForm = $("#deleteRoomForm");
+	var $roomNameDelete = $("#roomNameDelete");
+	// Создаем событие "создание  комнаты"
+		$deleteRoomForm.submit(function(event)
+		{
+			event.preventDefault();
+			socket.emit("DETELE_ROOM",$roomNameDelete.val());
+		});
+	//===========================******************========================================
+	
 		// Создаем событие "смена комнаты"
 		function switchRoom(room){
 			socket.emit('SWITCH_ROOM', room);
+			currentRoom = room;
 			console.log("room switch");
 		}	
 	//=======================***************========================================
@@ -177,20 +207,17 @@
 				 if(receivedUser.authorized == true)
 				 {
 					 $("#adminauthdiv").html("<div class='alert alert-success'>Админ авторизован</div>");
-				
-				
-				 socket.emit('TO_SERVER_MESS', {
+				 	socket.emit('TO_SERVER_MESS', {
 					name: $name, 
 					mess: "User " + name + " has left the chat", 
-				});
-				 socket.emit('ADD_USER', "Admin: " + receivedUser.userName); 
-				 $name = "Admin: " +  receivedUser.userName;
-				}
+					});
+				 	socket.emit('ADD_USER', "Admin: " + receivedUser.userName); 
+				 	$name = "Admin: " +  receivedUser.userName;
+				  }
 				else
-				{
+				  {
 					$("#adminauthdiv").append("<div class='alert alert-danger'>Ошибка авторизации</div>");
-
-				}
+				  }
              });
              request.send(user);
          });
