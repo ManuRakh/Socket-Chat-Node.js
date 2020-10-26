@@ -1,36 +1,27 @@
-
 module.exports = function (app, dirname) {
-	const bodyParser = require("body-parser");
-	const urlencodedParser = bodyParser.urlencoded({extended: false});
 
-	app.get('/', urlencodedParser, function(request, respons) { //клиентская часть
+	const bodyParser = 			require("body-parser");
+	const urlencodedParser = 	bodyParser.urlencoded({extended: false});
+
+//===========================Функция добавления разрешения на кросдоменные запросы========================================
+	app.use((req, res, next) => { //
+		res.header('Access-Control-Allow-Origin', '*'); 
+		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+		next();
+	
+		app.options('*', (req, res) => {
+			// allowed XHR methods  
+			res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
+			res.send();
+		});
+	});
+
+//===========================Роутинг для тестов, в дальнейшем будет полностью удален========================================
+		app.get('/', urlencodedParser, function(request, respons) { //клиентская часть
+		// respons.setHeader('Access-Control-Allow-Origin', '*');
+		// respons.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+
 		respons.sendFile(dirname + '/public/index.html');
 	});
 
-	app.post('/admins/auth', urlencodedParser, function(request, response) { //для авторизации админа
-			var authorized = false;
-			const adminsJson = require(dirname + '/admins/index.json');
-			adminsJson.admins.forEach(element => {
-			if(element.name == request.body.userName)
-				{
-					if(element.pass == request.body.userpass)
-					{
-						authorized=true;
-					}
-				}
-			});
-			request.body.authorized = authorized;
-			//console.log(request.body.userpass);
-			request.body.userpass="";
-		    response.json(request.body); // отправляем пришедший ответ обратно
-		
-		});
-
-	app.get('/admin', function(request, respons) { //админская часть
-		respons.sendFile(dirname + '/public/admin.html');
-	});
-
-	app.get('*', function(request, respons) { //админская часть
-		respons.sendFile(dirname + '/public/error.html');
-	});
 };
