@@ -1,7 +1,22 @@
 //===========================Объявление глобальных переменных и библиотек========================================
 var express = 			require('express');
 var app = 				express();
-var server = 			require('http').createServer(app);
+// var server = 			require('http').createServer(app);
+// var app = require('express');
+var https = require('https');
+var fs = require('fs');
+
+var hskey = fs.readFileSync('sslcert/privkey-1603304997.pem');
+var hscert = fs.readFileSync('sslcert/cert-1603304997.pem')
+
+var options = {
+  key: hskey,
+  cert: hscert
+};
+
+var server = https.createServer(options, app);
+
+
 var io = 				require('socket.io').listen(server);
 io.rooms = []
 
@@ -12,8 +27,12 @@ bodyParser = 			require('body-parser'),
 const rooms_functions = require("./main_functions/rooms.js"); 
 //===========================Конец объявления========================================
 
+server.listen(7143, function () {
+  console.log('HTTP Express server is up!');
+});
+
 // Отслеживание порта
-server.listen(3000, console.log("чат для сервера запущен")); //к примеру для входа используется localhost:3000
+// server.listen(7143, console.log("чат для сервера запущен")); //к примеру для входа используется localhost:3000
 //===========================******************========================================
 
 //Глобальные Массивы со всеми подключениями

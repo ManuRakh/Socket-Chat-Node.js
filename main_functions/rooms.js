@@ -90,7 +90,7 @@ exports.toServerMess = function(socket, io)
 		}
 		console.log(obj)
 		// console.log(data.current_room + " "+ data.role + " "+ data.author + " "+ data.message + " "+ data.request + " "+ data.time);
-			console.log(socket.room)
+			
 			io.sockets["in"](data.current_room).emit('TO_CHAT_MESS', obj);
 	});
 }
