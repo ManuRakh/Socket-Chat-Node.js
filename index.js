@@ -54,7 +54,7 @@ function workWithSockets()
 		rooms_functions.addUser(socket, io);
 	//===========================******************========================================
 		// слушатель события "создание комнаты"
-		rooms_functions.createRoom(socket);
+		rooms_functions.createRoom(socket, io);
 	//===========================******************========================================
 		// слушатель события "удаление комнаты"
 		rooms_functions.deleteRoom(socket);

@@ -23,5 +23,8 @@ module.exports = function (app, dirname) {
 
 		respons.sendFile(dirname + '/public/index.html');
 	});
+		app.get("/second", urlencodedParser, (req, res)=>{
+			res.sendFile(dirname+ '/public/index2.html')
+		})
 
 };

@@ -10,8 +10,8 @@ class User {
 			hash:this.id,
 			owner:true
 		};
-		const add_room = ((roomName) => {
-			this.rooms.push({ roomName: roomName, hash: id, owner:false });
+		const add_room = ((roomName, hash) => {
+			this.rooms.push({ roomName: roomName, hash: hash, owner:false });
 		});
 		const get_user_rooms = (() => {
 			return this.rooms;
@@ -22,11 +22,12 @@ class User {
 		const change_current_room = ((new_room) => {
 			this.current_room = new_room;
 		});
-		const remove_room = ((roomId) => {
-			console.log(roomId)
-			this.rooms = this.rooms.filter((r) => r.hash != roomId);
-			console.log(this.rooms)
+		const remove_room = ((roomId, roomName) => {
+			this.rooms = this.rooms.filter((r) => r.hash != roomId)&&r.roomName!=roomName;
 		});
+		const get_all_rooms = (()=>{
+			return this.rooms
+		})
 		const get_current_room = (()=>{
 			return this.current_room
 		})
@@ -36,7 +37,8 @@ class User {
 			get_all_infos,
 			change_current_room,
 			remove_room,
-			get_current_room
+			get_current_room,
+			get_all_rooms
 		};
 	}
 }
