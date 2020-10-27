@@ -34,8 +34,7 @@ exports.switchRoom = function(socket, io)
 }
 
 //===========================Модуль Удаляет комнату========================================
-exports.deleteRoom = function(socket)
-{
+exports.deleteRoom = (socket) => {
     socket.on("DETELE_ROOM", function(room) {
 		// messages_functions.removeValueFromArr(rooms, room);
 		io.sockets.emit('UPDATE_ROOMS', rooms, socket.room);  //обновляет комнаты после удаления оной
@@ -44,8 +43,7 @@ exports.deleteRoom = function(socket)
 }
 
 //===========================Модуль Создает комнату========================================
-exports.createRoom = function(socket)
-{
+exports.createRoom = (socket) =>{
     socket.on('CREATE_ROOM', function(room) { //функция для создания комнаты
 		rooms.push(room);
 		io.sockets.emit('UPDATE_ROOMS', rooms, socket.room);  //вызов в index.html
@@ -54,13 +52,12 @@ exports.createRoom = function(socket)
 
 //===========================Модуль добавляет пользователя в сеть========================================
 
-exports.addUser = function(socket, io)
-{
-    socket.on('ADD_USER', async (username,userInfo) => {
+exports.addUser = (socket, io) =>{
+    socket.on('ADD_USER', async (username,id) => {
         socket.username = username;
 		socket.room = username; 
 		// socket.join(username)
-		let user = new User(username, makeHash(15))//id генерируется либо из бд по айди юзера, либо рандомно, пока что рандомно
+		let user = new User(username, id)//id генерируется либо из бд по айди юзера, либо рандомно, пока что рандомно
 		user.add_room(username)
 		if(io.rooms.filter((x)=>x.user_class===user).length===0)
 		io.rooms.push({name:username, user_class:user})
@@ -74,9 +71,25 @@ exports.addUser = function(socket, io)
         });
 }
 
+exports.add_user_to_conversation = (socket, io) =>{
+	const main_room = "main_room"
+	socket.username = username;
+	socket.room = main_room; 
+	// socket.join(username)
+	let user = new User(username, id)//id генерируется либо из бд по айди юзера, либо рандомно, пока что рандомно
+	user.add_room(main_room)
+	// if(io.rooms.filter((x)=>x.user_class===user).length===0)
+	// io.rooms.push({name:username, user_class:user})
+	switchRoomByServer(socket, main_room)
+	// socket.broadcast.to(socket.room).emit('TECH-MESSEGE', 'server ',socket.username + ' has connected to this room');//отправка сообщения юзерам данной комнаты о новом сочатчанине
+	socket.emit('UPDATE_ROOMS', rooms, main_room);
+	console.log( username + " подключился к " + socket.room +" room" );//сообщение о подключении юзера в консоль
+	getUserInfo(username, userInfo,socket, io); //отправляет объект userInfo на хранение на сервер
+};
+
+
 //===========================Модуль отправки сообщения на сервер========================================
-exports.toServerMess = function(socket, io)
-{
+exports.toServerMess = (socket, io) => {
 	
     socket.on('TO_SERVER_MESS', function(data) { 
 		// io.sockets.emit('UPDATE_ROOMS', rooms, undefined);

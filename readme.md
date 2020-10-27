@@ -1,4 +1,4 @@
-## Введение
+<!-- ## Введение
 Функционал и работа чата в основном просты. Для запуска необходим <b>npm</b><br/>
 Запускаем <b>npm start</b> <br/>
 Для входа в панель клиента идем по пути localhost:3000
@@ -26,7 +26,22 @@
 66 - функция create в позиции on<br/>
 73 - функция switchRoom в позиции on<br/>
 88 - функция disconnect в позиции on<br/>
-99 - функция send mess в позиции on<br/>
+99 - функция send mess в позиции on<br/> -->
+# Поля для .env (для указания базы данных для микросервиса)
+В .env заполнить поля<br/>
+добавить сообщение в бд (json формат)<br/>
+добавить комнаты юзера  (json формат )<br/>
+получить данные юзера по токену<br/>
+получить комнаты юзера по его id (json формат )<br/>
+удалить юзера из комнаты - по айди владельца комнаты.<br/>
+получить последние сообщения по оффсету и лимиту, (json формат )<br/>
+Соответственно: <br/>
+add_msgs_to_db=${host}/api/add_message<br/>
+add_user_to_chat=${host}/api/add_user_to_chat<br/>
+get_user_information = ${host}/api/get_user_information<br/>
+get_room_info_by_id=${host}/api/get_room_info_by_id<br/>
+remove_user_from_room=${host}/api/remove_user_from_room<br/>
+get_mess_history=${host}/api/get_mess_history<br/>
 
 ##  index.html 
 Опишу основные роуты - основной код начинается с 72й строчки.<br/>
