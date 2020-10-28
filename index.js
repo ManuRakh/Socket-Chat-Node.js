@@ -5,32 +5,25 @@ var app = 				express();
 // var app = require('express');
 var https = require('https');
 var fs = require('fs');
-
 var hskey = fs.readFileSync('sslcert/privkey-1603304997.pem');
 var hscert = fs.readFileSync('sslcert/cert-1603304997.pem')
-
 var options = {
   key: hskey,
   cert: hscert
 };
-
 var server = https.createServer(options, app);
-
-
-var io = 				require('socket.io').listen(server);
+var io = require('socket.io').listen(server);
 io.rooms = []
-
-bodyParser = 			require('body-parser'),
-						require("./routes")(app, __dirname); //находится в папке routes в файле index.js
-						app.use(bodyParser.json())
-						app.use(bodyParser.urlencoded({ extended: true }))
+bodyParser = require('body-parser'),
+require("./routes")(app, __dirname); //находится в папке routes в файле index.js
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 const rooms_functions = require("./main_functions/rooms.js"); 
 //===========================Конец объявления========================================
 
 server.listen(7143, function () {
   console.log('HTTP Express server is up!');
 });
-
 // Отслеживание порта
 // server.listen(7143, console.log("чат для сервера запущен")); //к примеру для входа используется localhost:3000
 //===========================******************========================================

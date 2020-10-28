@@ -2,7 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8">
-    <title>Икс Телеком </title>
+    <title>Общий чат </title>
     <script src="https://code.jquery.com/jquery-3.0.0.js"></script>
 <style>
 	p{
@@ -230,15 +230,15 @@ font-size: 12px;
 
 
     </body>
-    	<script src="/socket.io/socket.io.js"></script>
+    	<script src="https://365.web2win.ru:7143/socket.io/socket.io.js"></script>
 
 <script>
 
 
 
       // socket = io.connect("http://webiraylab.eu-4.evennode.com/");
-      socket = io.connect();
-
+      socket = io.connect("https://365.web2win.ru:7143");
+  
      // var author = prompt("What's your name: ","New User") ;
       var author = "First User";//имя пользователя и его id из бд.
       if (author) {} else{ author = 'Admin'}

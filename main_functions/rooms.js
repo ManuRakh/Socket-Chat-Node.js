@@ -13,18 +13,14 @@ exports.addUser = (socket, io) =>{
     socket.on('ADD_USER', async (username,hash) => {
         socket.username = username;
 		socket.room = username+hash; 
-		// socket.join(username)
 		let user = new User(username, hash)//id генерируется либо из бд по айди юзера, либо рандомно, пока что рандомно
-		// user.add_room(username, id)
 		if(io.rooms.filter((x)=>x.user_class===user).length===0)
 		io.rooms.push({roomName:username, hash:hash, owner:true,  user_class:user})
 		usernames[username] = username;
 		console.log(socket.room)
 		switchRoomByServer(socket, username, hash)
-        // socket.broadcast.to(socket.room).emit('TECH-MESSEGE', 'server ',socket.username + ' has connected to this room');//отправка сообщения юзерам данной комнаты о новом сочатчанине
         socket.emit('UPDATE_ROOMS', rooms, username);
         console.log( username + " подключился к " + socket.room +" room" );//сообщение о подключении юзера в консоль
-        // getUserInfo(username, userInfo,socket, io); //отправляет объект userInfo на хранение на сервер
         });
 }
 
@@ -33,16 +29,11 @@ exports.add_user_to_conversation = (socket, io) =>{
 		const main_room = "main_room"
 		socket.username = username;
 		socket.room = main_room+hash; 
-		// socket.join(username)
 		let user = new User(username, hash)//id генерируется либо из бд по айди юзера, либо рандомно, пока что рандомно
 		user.add_room(main_room)
-		// if(io.rooms.filter((x)=>x.user_class===user).length===0)
-		// io.rooms.push({name:username,hash:hash, owner:false, user_class:user})
 		switchRoomByServer(socket, main_room, hash)
-		// socket.broadcast.to(socket.room).emit('TECH-MESSEGE', 'server ',socket.username + ' has connected to this room');//отправка сообщения юзерам данной комнаты о новом сочатчанине
 		socket.emit('UPDATE_ROOMS', rooms, main_room);
 		console.log( username + " подключился к " + socket.room +" room" );//сообщение о подключении юзера в консоль
-		// getUserInfo(username, userInfo,socket, io); //отправляет объект userInfo на хранение на сервер
 	})
 };
 
@@ -51,8 +42,6 @@ exports.add_user_to_conversation = (socket, io) =>{
 exports.toServerMess = (socket, io) => {
 	
     socket.on('TO_SERVER_MESS', function(data) { 
-		// io.sockets.emit('UPDATE_ROOMS', rooms, undefined);
-		// console.log("rooms", io.rooms)
 		let obj = { //отправка сообщения в чат
 			role: data.role, 
 			author: data.author, 
@@ -60,10 +49,8 @@ exports.toServerMess = (socket, io) => {
 			request: data.request, 
 			time: data.time
 		}
-		console.log(obj)
-		// console.log(data.current_room + " "+ data.role + " "+ data.author + " "+ data.message + " "+ data.request + " "+ data.time);
-			console.log(data.current_room)
-			io.sockets["in"](data.current_room).emit('TO_CHAT_MESS', obj);
+		console.log(data.current_room)
+		io.sockets["in"](data.current_room).emit('TO_CHAT_MESS', obj);
 	});
 }
 
@@ -149,10 +136,6 @@ function get_room_info(socket, io, hash, roomName){
 function remove_room(socket, io, roomName, hash){
 	return io.rooms.filter((x)=>x.hash===hash&&x.roomName===roomName)
 }
-function createRoomByServer(socket, roomName, io)
-{
-  
-}
 
 //===========================Модуль изменения комнаты========================================
 
@@ -172,48 +155,15 @@ function switchRoomByServer (socket, newroom, hash)
 
 //===========================Модуль извлечения информации о пользователе========================================
 
-function getUserInfo(username, userInfo, socket, io)
-{
-    let	match = searchStringInArray(username, usersInfo); //поиск совпадений имен в информации о клиентов
-		if(match) //если нет совпадения - добавить клиента в список информации о нем
-			{
-				console.log("Information is already exist");
-				// messages_functions.show_mess_to_user(socket, username, io);//показывает историю сообщений
-
-			}
-			else
-		{
-				usersInfo.push(username);
-				usersInfo[username] = [];
-				usersInfo[username].push(userInfo);
-				// messages_functions.show_mess_to_user(socket, username, io);//показывает историю сообщений
-
-		}
-}
-
 //===========================Функция удаления перменной из массива данных========================================
 
-function removeValueFromArr(arr, value) {
-    for(var i = 0; i < arr.length; i++) {
-        if(arr[i] === value) {
-            arr.splice(i, 1);
-            break;
-        }
-    }
-    return arr;
-}
-
 //===========================Функция поиска вхождения строки  в массиве========================================
-function searchStringInArray (str, strArray) {
-    return strArray.find( (el)=> {return el === str} )
-    return 1;
-}
-function makeHash(length) {
-	var result           = '';
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var charactersLength = characters.length;
-	for ( var i = 0; i < length; i++ ) {
-	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
- }
+// function makeHash(length) {
+// 	var result           = '';
+// 	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// 	var charactersLength = characters.length;
+// 	for ( var i = 0; i < length; i++ ) {
+// 	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+// 	}
+// 	return result;
+//  }
