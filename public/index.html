@@ -230,15 +230,17 @@ font-size: 12px;
 
 
     </body>
-    	<script src="https://365.web2win.ru:7143/socket.io/socket.io.js"></script>
+    	<!-- <script src="https://365.web2win.ru:7143/socket.io/socket.io.js"></script> -->
+    	<script src="/socket.io/socket.io.js"></script>
 
 <script>
 
 
 
       // socket = io.connect("http://webiraylab.eu-4.evennode.com/");
-      socket = io.connect("https://365.web2win.ru:7143");
-  
+      // socket = io.connect("https://365.web2win.ru:7143");
+      socket = io.connect();
+
      // var author = prompt("What's your name: ","New User") ;
       var author = "First User";//имя пользователя и его id из бд.
       if (author) {} else{ author = 'Admin'}
@@ -256,6 +258,11 @@ font-size: 12px;
       {
         console.log(result);
       })
+      setTimeout(()=>{
+        currentRoom = "123a321b"
+        socket.emit("START_CONVERSATION","123a", "321b")
+        console.log("ROOM CHANGED", currentRoom)
+      }, 3*1000)
 function repeat(data) {
 $(' .entry__request').val(data)}
 
@@ -308,9 +315,9 @@ socket.on("TECH-MESSEGE", ()=>{
           
         // $(".card__chat").scrollTo(0, document.body.scrollHeight);
         });
-        socket.on("GET_ALL_CONVERSATIONS", (arr)=>{
-          console.log(arr)
-        })
+        // socket.on("GET_ALL_CONVERSATIONS", (arr)=>{
+        //   console.log(arr)
+        // })
           $('.entry__send-img').click(function(){
         //  запуск события SEND_MESSAGE
        		if ( $(' .entry__response').val() ) 
