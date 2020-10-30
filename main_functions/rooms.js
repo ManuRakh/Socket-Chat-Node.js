@@ -2,7 +2,7 @@ var rooms = 				[]; //массив  с комнатами, по умолчани
 var usersInfo = 			[];
 const messages_functions = 	require("./messages.js"); 
 const User = require("./support_classes/User").get_user_class()
-const Message = require("./support_classes/Message").get_message_class()
+const Message = require("./support_classes/Message")
 
 
 
@@ -47,10 +47,14 @@ exports.add_user_to_conversation = (socket, io) =>{
 exports.toServerMess = (socket, io) => {
 	
     socket.on('TO_SERVER_MESS', function(data) { 
-		console.log(io.rooms.get_user_rooms("123a"))
+		// console.log(io.rooms.get_user_rooms("123a"))
+		console.log(io.rooms.get_room_info(data.current_room))
+		const msg =new  Message(data.message, data.author, data.author,data.current_room)
+		console.log(msg.get_message())
 		let obj = { //отправка сообщения в чат
 			role: data.role, 
 			author: data.author, 
+			sender:data.author,
 			message: data.message, 
 			request: data.request, 
 			time: data.time

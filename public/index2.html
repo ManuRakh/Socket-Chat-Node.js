@@ -240,7 +240,7 @@ font-size: 12px;
       socket = io.connect();
 
      // var author = prompt("What's your name: ","New User") ;
-      var author = "Second User";//имя пользователя и его id из бд.
+      var author = "321b";//имя пользователя и его id из бд.
       if (author) {} else{ author = 'Admin'}
       const id = "hjkhjkfsyurhjsfkhfeuhfsjkshfjk"
 
@@ -257,14 +257,19 @@ font-size: 12px;
       {
         console.log(result);
       })
+      setTimeout(()=>{
+        currentRoom = "123a321b"
+        socket.emit("SWITCH_ROOM","123a", "321b", "321b")
+        console.log("ROOM CHANGED", currentRoom)
+      }, 3*1000)
 function repeat(data) {
 $(' .entry__request').val(data)}
 
 socket.on("UPDATE_ROOMS", (val, val2)=>{
   console.log(val, val2)
 })
-socket.on("TECH-MESSEGE", ()=>{
-  console.log("TECH MESSAGE")
+socket.on("TECH-MESSEGE", (msg)=>{
+  console.log("TECH MESSAGE", msg)
 })
       socket.on('TO_CHAT_MESS', function(data){
         console.log(data)
