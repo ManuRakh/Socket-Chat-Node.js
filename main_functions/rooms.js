@@ -16,7 +16,8 @@ exports.addUser = (socket, io) =>{
 		console.log(socket.room)
 		// switchRoomByServer(socket, username, hash)
         socket.emit('UPDATE_ROOMS', rooms, username);
-        console.log( username + " подключился к " + socket.room +" room" );//сообщение о подключении юзера в консоль
+		console.log( username + " подключился к " + socket.room +" room" );//сообщение о подключении юзера в консоль
+		socket.emit("SUCCESS_CONNECTED")
         });
 }
 
@@ -26,6 +27,7 @@ exports.start_conversation = (socket, io) =>{
 		const roomName = author_id+conversationer_id
 		io.rooms.add_room(author_id, conversationer_id, roomName)
 		switchRoomByServer(socket, roomName)
+		socket.emit("CONVERSATION_STARTED", socket.room, author_id, conversationer_id)
 	})
 }
 
