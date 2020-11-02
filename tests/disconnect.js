@@ -1,4 +1,4 @@
-ar chai = require('chai');
+var chai = require('chai');
 var should = chai.should();
 var io = require('socket.io-client');
 const socketURL = "http://localhost:7143/"

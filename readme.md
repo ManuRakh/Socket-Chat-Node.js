@@ -68,6 +68,12 @@ get_room_info_by_id=${host}/api/get_room_info_by_id<br/>
 remove_user_from_room=${host}/api/remove_user_from_room<br/>
 get_mess_history=${host}/api/get_mess_history<br/>
 
+## Запуск и тесты
+Для запуска тестов сначала нужно запустить сервер.<br/>
+Сначала набираем <b>npm install (или yarn install как удобно) </b><br/>
+Затем <b>npm run start</b> <br/>
+Затем уже для запуска тестов набираем <b>mocha tests</b>
+
 ##  index.html 
 Опишу основные роуты - основной код начинается с 72й строчки.<br/>
 Ну и соответственно во время чата все будет крутиться вокруг них. Больше знать не обязательно <br/>
