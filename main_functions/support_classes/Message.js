@@ -11,6 +11,7 @@ class Message {
 		this.message = message	
 	}
 	get_message = () =>{
+		//я тут подумал, историю сообщений лучше выводить из роута, а не из сокета. Так будет меньше нагрузки на сокеты.
 		return this.message
 	}
 	save_message = () =>{

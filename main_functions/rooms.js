@@ -15,7 +15,8 @@ exports.addUser = (socket, io) =>{
 		let user = new User(username, hash)//id генерируется либо из бд по айди юзера, либо рандомно, пока что рандомно
 		console.log(socket.room)
 		// switchRoomByServer(socket, username, hash)
-        socket.emit('UPDATE_ROOMS', rooms, username);
+		socket.emit('UPDATE_ROOMS', rooms, username);
+		socket.emit("TECH-MESSEGE", `user ${socket.username} connected to ${socket.room}`)
 		console.log( username + " подключился к " + socket.room +" room" );//сообщение о подключении юзера в консоль
 		socket.emit("SUCCESS_CONNECTED")
         });
@@ -23,11 +24,11 @@ exports.addUser = (socket, io) =>{
 
 exports.start_conversation = (socket, io) =>{
 	socket.on("START_CONVERSATION", async (author_id, conversationer_id)=>{
-		console.log("START_CONVERSATION")
-		const roomName = author_id+conversationer_id
+		console.log("START_CONVERSATION")//
+		const roomName = makeHash(15)
 		io.rooms.add_room(author_id, conversationer_id, roomName)
 		switchRoomByServer(socket, roomName)
-		socket.emit("CONVERSATION_STARTED", socket.room, author_id, conversationer_id)
+		socket.emit("CONVERSATION_STARTED", socket.room)
 	})
 }
 
@@ -50,7 +51,7 @@ exports.toServerMess = (socket, io) => {
 	
     socket.on('TO_SERVER_MESS', function(data) { 
 		// console.log(io.rooms.get_user_rooms("123a"))
-		console.log(io.rooms.get_room_info(data.current_room))
+		console.log(io.rooms.get_room_info(data.current_room_id))
 		const msg =new  Message(data.message, data.author, data.author,data.current_room)
 		console.log(msg.get_message())
 		let obj = { //отправка сообщения в чат
@@ -89,20 +90,24 @@ exports.get_all_conversations = (socket, io) => {
 exports.disconnect=  function(socket) //
 {
     socket.on('disconnect', function(data) {
+		console.log("DISCONNECTED")
+		socket.disconnect()
+		socket.emit("disconnected")
 	});
 }
 
 //===========================Модуль Меняет комнату========================================
 exports.switchRoom = function(socket, io)
 {
-	socket.on('SWITCH_ROOM', (author_id, conversationer_id, switcher) => { //функция для изменения текущей комнаты
-		const roomName = author_id+conversationer_id
+	socket.on('SWITCH_ROOM', (roomId) => { //функция для изменения текущей комнаты
+		const roomName = roomId
 		socket.leave(socket.room);
 		socket.join(roomName);
 		socket.emit('TECH-MESSEGE', 'server', 'you have connected to ' + roomName);
+		socket.emit("ROOM_SWITCHED")
 		socket.room = roomName;
-		socket.broadcast.to(roomName).emit('TECH-MESSEGE', 'server ',socket.username + ' has joined this room');
-		socket.emit('UPDATE_ROOMS', io.rooms.get_user_rooms(switcher), socket.room);
+		socket.broadcast.to(roomName).emit('TECH-MESSEGE', 'server ',socket.username + ' has joined this room ' + roomName);
+		socket.emit('UPDATE_ROOMS', io.rooms.get_user_rooms(roomId), socket.room);
         });
 }
 
@@ -170,12 +175,12 @@ function switchRoomByServer (socket, roomName)
 //===========================Функция удаления перменной из массива данных========================================
 
 //===========================Функция поиска вхождения строки  в массиве========================================
-// function makeHash(length) {
-// 	var result           = '';
-// 	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-// 	var charactersLength = characters.length;
-// 	for ( var i = 0; i < length; i++ ) {
-// 	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
-// 	}
-// 	return result;
-//  }
+function makeHash(length) {
+	var result           = '';
+	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	var charactersLength = characters.length;
+	for ( var i = 0; i < length; i++ ) {
+	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+ }

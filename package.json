@@ -2,6 +2,7 @@
     "name": "newjson",
     "description": "description",
     "dependencies": {
+        "assert": "^2.0.0",
         "chai": "^4.2.0",
         "eslint": "^7.12.1",
         "express": "^4.17.1",

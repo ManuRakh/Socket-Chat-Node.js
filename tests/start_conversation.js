@@ -7,10 +7,6 @@ describe("Socket-Server", function () {
     var client = io(socketURL);
     client.emit("START_CONVERSATION", "123a", "123b")
     client.on("CONVERSATION_STARTED", (roomName, author_id, conv_id)=>{
-        if(roomName!=undefined) 
-            if(author_id!=undefined)
-                if(conv_id!=undefined)
-                    if(roomName===author_id+conv_id)
                         done()
     })
   });
