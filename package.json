@@ -13,7 +13,7 @@
         "mocha": "^8.2.0",
         "mongodb": "^3.5.2",
         "mongoose": "^5.8.9",
-        "socket.io": "^2.3.0",
+        "socket.io": "^2.4.0",
         "socket.io-client": "^2.3.1"
     },
     "scripts": {
